@@ -16,7 +16,7 @@ def fitness_func(ga_instance, solution, solution_idx):
 
 fitness_function = fitness_func
 
-num_generations = 2 # Number of generations.
+num_generations = 1 # Number of generations.
 num_parents_mating = 7 # Number of solutions to be selected as parents in the mating pool.
 
 init_range_low = 0
