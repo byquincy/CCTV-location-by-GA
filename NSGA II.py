@@ -5,7 +5,7 @@ import time
 from tqdm import tqdm
 
 NUMBER_OF_CIRCLE = drawByCV.NUMBER_OF_CIRCLE
-NUMBER_OF_GENERATIONS = 300
+NUMBER_OF_GENERATIONS = 500
 
 pbar = tqdm(total=NUMBER_OF_GENERATIONS)
 
@@ -21,7 +21,7 @@ def fitness_func(ga_instance, solution, solution_idx):
 fitness_function = fitness_func
 
 num_generations = NUMBER_OF_GENERATIONS # Number of generations.
-num_parents_mating = 7 # Number of solutions to be selected as parents in the mating pool.
+num_parents_mating = 10 # Number of solutions to be selected as parents in the mating pool.
 
 init_range_low = 0
 init_range_high = 800
@@ -34,18 +34,17 @@ num_genes = NUMBER_OF_CIRCLE*2  # (x, y) * 50
 gene_type = int
 
 last_fitness = 0
-startTime = time.time()
+# startTime = time.time()
 def callback_generation(ga_instance):
     global last_fitness
-    global startTime
+    # global startTime
 
     best_solution = ga_instance.best_solution()    
     print("Generation = {generation}".format(generation=ga_instance.generations_completed))
     print("Fitness    = {fitness}".format(fitness=best_solution[1]))
     print("Change     = {change}".format(change=best_solution[1] - last_fitness))
-    print("Time       = %.2f"%(time.time() - startTime))
-    print(best_solution[0])
-    startTime = time.time()
+    # print(best_solution[0])
+    # startTime = time.time()
     last_fitness = best_solution[1]
 
     pbar.update()

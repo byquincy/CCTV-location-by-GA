@@ -2,52 +2,78 @@ import numpy as np
 import cv2
 import math
 
-import time
+import ray
 
-NUMBER_OF_CIRCLE=40
+ray.shutdown()
+ray.init(num_cpus=12)
+# ray.init(num_cpus=10, num_gpus=16)
+NUMBER_OF_CIRCLE=50
 RADIUS_CIRCLE=75
 NUMBER_OF_CIRCLE_RAY=250
 
-def shotRay(img, rayImg, radian, length, coordinate):
-    standardX = coordinate[0]
-    standardY = coordinate[1]
-    sin = math.sin(radian)
-    cos = math.cos(radian)
+# def shotRay(img, rayImg, radian, length, coordinate):
+#     standardX = coordinate[0]
+#     standardY = coordinate[1]
+#     sin = math.sin(radian)
+#     cos = math.cos(radian)
 
-    for i in range(length):
-        x = standardX + round(cos*i)
-        y = standardY + round(sin*i)
-        if (x<0)or(y<0):
-            continue
+#     for i in range(length):
+#         x = standardX + round(cos*i)
+#         y = standardY + round(sin*i)
+#         if (x<0)or(y<0):
+#             continue
         
-        try:
-            if img.item(y, x)==0:
-                break
-            else:
-                rayImg.itemset(y, x, 255)
-        except Exception as e:
-            break
+#         try:
+#             if img.item(y, x)==0:
+#                 break
+#             else:
+#                 rayImg.itemset(y, x, 255)
+#         except Exception as e:
+#             break
 
-def rayCircle(rayImg, coordinate):
+@ray.remote
+def rayCircle(coordinate):
+    rayImg = np.zeros((800, 800), np.uint8)
+
     for i in range(NUMBER_OF_CIRCLE_RAY):
         radian = 2*math.pi * (i/NUMBER_OF_CIRCLE_RAY)
-        shotRay(img, rayImg, radian, RADIUS_CIRCLE, coordinate)
+
+        # shot Ray
+        # shotRay(img, rayImg, radian, RADIUS_CIRCLE, coordinate)
+        standardX = coordinate[0]
+        standardY = coordinate[1]
+        sin = math.sin(radian)
+        cos = math.cos(radian)
+
+        for i in range(RADIUS_CIRCLE):
+            x = standardX + round(cos*i)
+            y = standardY + round(sin*i)
+            if (x<0)or(y<0):
+                continue
+            
+            try:
+                if img.item(y, x)==0:
+                    break
+                else:
+                    rayImg.itemset(y, x, 255)
+            except Exception as e:
+                break
     
     return rayImg
 
-def hello(number):
-    print(">>", number)
-
 def getFitness(gene):
-    start = time.time()
     array = np.array(gene).reshape(NUMBER_OF_CIRCLE, 2)
-    rayImg = np.zeros((800, 800), np.uint8)
-    
+
+    queue = []
     for coordinate in array:
-        rayImg = rayCircle(rayImg, coordinate)
+        queue.append( rayCircle.remote(coordinate) )
     
-    print(time.time() - start)
-    return np.sum(rayImg)//255
+    results = ray.get(queue)
+    sumRayImg = np.zeros((800, 800), np.uint8)
+    for rayImg in results:
+        sumRayImg = np.maximum(rayImg, sumRayImg)
+
+    return np.sum(sumRayImg)//255
 
 def visualize(gene):
     array = np.array(gene).astype(int).reshape(NUMBER_OF_CIRCLE, 2)
