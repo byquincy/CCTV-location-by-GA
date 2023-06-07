@@ -2,6 +2,8 @@ import numpy as np
 import cv2
 import math
 
+import time
+
 NUMBER_OF_CIRCLE=40
 RADIUS_CIRCLE=75
 NUMBER_OF_CIRCLE_RAY=250
@@ -33,13 +35,18 @@ def rayCircle(rayImg, coordinate):
     
     return rayImg
 
+def hello(number):
+    print(">>", number)
+
 def getFitness(gene):
+    start = time.time()
     array = np.array(gene).reshape(NUMBER_OF_CIRCLE, 2)
     rayImg = np.zeros((800, 800), np.uint8)
-
+    
     for coordinate in array:
         rayImg = rayCircle(rayImg, coordinate)
     
+    print(time.time() - start)
     return np.sum(rayImg)//255
 
 def visualize(gene):
