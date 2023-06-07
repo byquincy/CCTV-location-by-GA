@@ -5,7 +5,7 @@ from tqdm import tqdm
 import csv
 
 NUMBER_OF_CIRCLE = drawByCV.NUMBER_OF_CIRCLE
-NUMBER_OF_GENERATIONS = 5
+NUMBER_OF_GENERATIONS = 1000
 fSolutions = open('Solutions.csv', 'w', encoding='utf-8', newline='')
 fFitnesses = open("Fitnesses.csv", 'w', encoding='utf-8', newline='')
 wrSolutions = csv.writer(fSolutions)
