@@ -1,21 +1,19 @@
 import pygad
 import drawByCV
 
-import time
 from tqdm import tqdm
+import csv
 
 NUMBER_OF_CIRCLE = drawByCV.NUMBER_OF_CIRCLE
-NUMBER_OF_GENERATIONS = 500
+NUMBER_OF_GENERATIONS = 5
+fSolutions = open('Solutions.csv', 'w', encoding='utf-8', newline='')
+fFitnesses = open("Fitnesses.csv", 'w', encoding='utf-8', newline='')
+wrSolutions = csv.writer(fSolutions)
+wrFitnesses = csv.writer(fFitnesses)
 
 pbar = tqdm(total=NUMBER_OF_GENERATIONS)
 
-# function_inputs = []
-# for i in range(NUMBER_OF_CIRCLE*2):
-#     function_inputs.append(800*random.random())
-
 def fitness_func(ga_instance, solution, solution_idx):
-    # Calculating the fitness value of each solution in the current population.
-    # The fitness function calulates the sum of products between each input and its corresponding weight.
     return drawByCV.getFitness(solution)
 
 fitness_function = fitness_func
@@ -26,31 +24,28 @@ num_parents_mating = 10 # Number of solutions to be selected as parents in the m
 init_range_low = 0
 init_range_high = 800
 
-# To prepare the initial population, there are 2 ways:
-# 1) Prepare it yourself and pass it to the initial_population parameter. This way is useful when the user wants to start the genetic algorithm with a custom initial population.
-# 2) Assign valid integer values to the sol_per_pop and num_genes parameters. If the initial_population parameter exists, then the sol_per_pop and num_genes parameters are useless.
+
 sol_per_pop = 50 # Number of solutions in the population.
 num_genes = NUMBER_OF_CIRCLE*2  # (x, y) * 50
 gene_type = int
 
-last_fitness = 0
-# startTime = time.time()
+# last_fitness = 0
 def callback_generation(ga_instance):
-    global last_fitness
-    # global startTime
+    # global last_fitness
 
     best_solution = ga_instance.best_solution()    
-    print("Generation = {generation}".format(generation=ga_instance.generations_completed))
-    print("Fitness    = {fitness}".format(fitness=best_solution[1]))
-    print("Change     = {change}".format(change=best_solution[1] - last_fitness))
-    # print(best_solution[0])
-    # startTime = time.time()
-    last_fitness = best_solution[1]
+    # print("Generation = {generation}".format(generation=ga_instance.generations_completed))
+    # print("Fitness    = {fitness}".format(fitness=best_solution[1]))
+    # print("Change     = {change}".format(change=best_solution[1] - last_fitness))
 
+    # print(list(best_solution[0]))
+    # last_fitness = best_solution[best_solution[1]]
+
+    wrSolutions.writerow(best_solution[0])
+    wrFitnesses.writerow([best_solution[1]])
     pbar.update()
-    print("\n\n")
+    # print("\n\n")
 
-# Creating an instance of the GA class inside the ga module. Some parameters are initialized within the constructor.
 ga_instance = pygad.GA(num_generations=num_generations,
                        num_parents_mating=num_parents_mating, 
                        fitness_func=fitness_function,
@@ -66,10 +61,12 @@ ga_instance = pygad.GA(num_generations=num_generations,
 # Running the GA to optimize the parameters of the function.
 ga_instance.run()
 
-filename = 'genetic' # The filename to which the instance is saved. The name is without extension.
-ga_instance.save(filename=filename)
+# filename = 'genetic' # The filename to which the instance is saved. The name is without extension.
+# ga_instance.save(filename=filename)
 
 pbar.close()
+fSolutions.close()
+fFitnesses.close()
 exit()
 
 # After the generations complete, some plots are showed that summarize the how the outputs/fitenss values evolve over generations.
