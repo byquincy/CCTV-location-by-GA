@@ -1,9 +1,8 @@
 import numpy as np
 import cv2
 import math
-from multiprocessing import Pool, freeze_support
 
-NUMBER_OF_CIRCLE=50
+NUMBER_OF_CIRCLE=40
 RADIUS_CIRCLE=75
 NUMBER_OF_CIRCLE_RAY=250
 
@@ -35,7 +34,7 @@ def rayCircle(rayImg, coordinate):
     return rayImg
 
 def getFitness(gene):
-    array = np.array(gene).astype(int).reshape(NUMBER_OF_CIRCLE, 2)
+    array = np.array(gene).reshape(NUMBER_OF_CIRCLE, 2)
     rayImg = np.zeros((800, 800), np.uint8)
 
     for coordinate in array:

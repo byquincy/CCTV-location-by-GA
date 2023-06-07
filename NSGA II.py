@@ -5,7 +5,7 @@ import time
 from tqdm import tqdm
 
 NUMBER_OF_CIRCLE = drawByCV.NUMBER_OF_CIRCLE
-NUMBER_OF_GENERATIONS = 100
+NUMBER_OF_GENERATIONS = 300
 
 pbar = tqdm(total=NUMBER_OF_GENERATIONS)
 
@@ -29,7 +29,7 @@ init_range_high = 800
 # To prepare the initial population, there are 2 ways:
 # 1) Prepare it yourself and pass it to the initial_population parameter. This way is useful when the user wants to start the genetic algorithm with a custom initial population.
 # 2) Assign valid integer values to the sol_per_pop and num_genes parameters. If the initial_population parameter exists, then the sol_per_pop and num_genes parameters are useless.
-sol_per_pop = 30 # Number of solutions in the population.
+sol_per_pop = 50 # Number of solutions in the population.
 num_genes = NUMBER_OF_CIRCLE*2  # (x, y) * 50
 gene_type = int
 
@@ -45,10 +45,11 @@ def callback_generation(ga_instance):
     print("Change     = {change}".format(change=best_solution[1] - last_fitness))
     print("Time       = %.2f"%(time.time() - startTime))
     print(best_solution[0])
-    print("\n\n")
     startTime = time.time()
     last_fitness = best_solution[1]
+
     pbar.update()
+    print("\n\n")
 
 # Creating an instance of the GA class inside the ga module. Some parameters are initialized within the constructor.
 ga_instance = pygad.GA(num_generations=num_generations,
