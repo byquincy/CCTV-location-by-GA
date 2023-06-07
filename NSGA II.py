@@ -2,8 +2,12 @@ import pygad
 import drawByCV
 
 import time
+from tqdm import tqdm
 
 NUMBER_OF_CIRCLE = drawByCV.NUMBER_OF_CIRCLE
+NUMBER_OF_GENERATIONS = 100
+
+pbar = tqdm(total=NUMBER_OF_GENERATIONS)
 
 # function_inputs = []
 # for i in range(NUMBER_OF_CIRCLE*2):
@@ -16,7 +20,7 @@ def fitness_func(ga_instance, solution, solution_idx):
 
 fitness_function = fitness_func
 
-num_generations = 100 # Number of generations.
+num_generations = NUMBER_OF_GENERATIONS # Number of generations.
 num_parents_mating = 7 # Number of solutions to be selected as parents in the mating pool.
 
 init_range_low = 0
@@ -44,6 +48,7 @@ def callback_generation(ga_instance):
     print("\n\n")
     startTime = time.time()
     last_fitness = best_solution[1]
+    pbar.update()
 
 # Creating an instance of the GA class inside the ga module. Some parameters are initialized within the constructor.
 ga_instance = pygad.GA(num_generations=num_generations,
@@ -63,6 +68,8 @@ ga_instance.run()
 
 filename = 'genetic' # The filename to which the instance is saved. The name is without extension.
 ga_instance.save(filename=filename)
+
+pbar.close()
 exit()
 
 # After the generations complete, some plots are showed that summarize the how the outputs/fitenss values evolve over generations.
