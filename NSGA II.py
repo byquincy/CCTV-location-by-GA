@@ -44,7 +44,7 @@ def callback_generation(ga_instance):
     print("Fitness    = {fitness}".format(fitness=best_solution[1]))
     print("Change     = {change}".format(change=best_solution[1] - last_fitness))
     print("Time       = %.2f"%(time.time() - startTime))
-    print(ga_instance.best_solution()[0])
+    print(best_solution()[0])
     print("\n\n")
     startTime = time.time()
     last_fitness = best_solution[1]
