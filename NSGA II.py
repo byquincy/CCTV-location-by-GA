@@ -1,7 +1,7 @@
 import pygad
-import numpy
-import random
 import drawByCV
+
+import time
 
 NUMBER_OF_CIRCLE = drawByCV.NUMBER_OF_CIRCLE
 
@@ -30,14 +30,19 @@ num_genes = NUMBER_OF_CIRCLE*2  # (x, y) * 50
 gene_type = int
 
 last_fitness = 0
+startTime = time.time()
 def callback_generation(ga_instance):
     global last_fitness
-    best_solution = ga_instance.best_solution()
+    global startTime
+
+    best_solution = ga_instance.best_solution()    
     print("Generation = {generation}".format(generation=ga_instance.generations_completed))
     print("Fitness    = {fitness}".format(fitness=best_solution[1]))
     print("Change     = {change}".format(change=best_solution[1] - last_fitness))
+    print("Time       = %.2f"%(time.time() - startTime))
     print(ga_instance.best_solution()[0])
     print("\n\n")
+    startTime = time.time()
     last_fitness = best_solution[1]
 
 # Creating an instance of the GA class inside the ga module. Some parameters are initialized within the constructor.
@@ -55,6 +60,10 @@ ga_instance = pygad.GA(num_generations=num_generations,
 
 # Running the GA to optimize the parameters of the function.
 ga_instance.run()
+
+filename = 'genetic' # The filename to which the instance is saved. The name is without extension.
+ga_instance.save(filename=filename)
+exit()
 
 # After the generations complete, some plots are showed that summarize the how the outputs/fitenss values evolve over generations.
 ga_instance.plot_fitness()
