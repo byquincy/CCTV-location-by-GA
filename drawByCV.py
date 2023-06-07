@@ -3,10 +3,9 @@ import cv2
 import math
 from multiprocessing import Pool, freeze_support
 
-import time
-
 NUMBER_OF_CIRCLE=50
 RADIUS_CIRCLE=75
+NUMBER_OF_CIRCLE_RAY=250
 
 def shotRay(img, rayImg, radian, length, coordinate):
     standardX = coordinate[0]
@@ -29,8 +28,8 @@ def shotRay(img, rayImg, radian, length, coordinate):
             break
 
 def rayCircle(rayImg, coordinate):
-    for i in range(1080):
-        radian = math.radians(i/3)
+    for i in range(NUMBER_OF_CIRCLE_RAY):
+        radian = 2*math.pi * (i/NUMBER_OF_CIRCLE_RAY)
         shotRay(img, rayImg, radian, RADIUS_CIRCLE, coordinate)
     
     return rayImg
@@ -39,12 +38,9 @@ def getFitness(gene):
     array = np.array(gene).astype(int).reshape(NUMBER_OF_CIRCLE, 2)
     rayImg = np.zeros((800, 800), np.uint8)
 
-    start = time.time()
-
     for coordinate in array:
         rayImg = rayCircle(rayImg, coordinate)
     
-    print(time.time() - start, "\t|", np.sum(rayImg)//255)
     return np.sum(rayImg)//255
 
 def visualize(gene):
@@ -61,6 +57,10 @@ def visualize(gene):
 
 img = cv2.imread('imageSet/room_map.png', 0)
 
-# cv2.imshow('bwImage', img)
-# cv2.imshow('rayImage', rayImg)
-# cv2.waitKey(0)
+if __name__ == "__main__":
+    rayImg = np.zeros((800, 800), np.uint8)
+    rayCircle(rayImg, (200, 400))
+
+    cv2.imshow('bwImage', img)
+    cv2.imshow('rayImage', rayImg)
+    cv2.waitKey(0)
