@@ -1,3 +1,3 @@
 # CCTV-location-by-GA
 
-Run "NSGA II.py"
+Run `python3 "NSGA II.py"`
