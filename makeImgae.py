@@ -1,4 +1,5 @@
 import random
+import os
 from PIL import Image, ImageDraw
 
 def generate_map(room_width, room_height, num_structures, padding):
@@ -51,14 +52,18 @@ def generate_map(room_width, room_height, num_structures, padding):
 def save_image(image, filename):
     image.save(filename, 'PNG')
 
-# 방 크기, 구조물 개수, 벽과의 간격 설정
-room_width = 800
-room_height = 800
-num_structures = 15
-padding = 10
+def setFilePath(filePath):
+    os.chdir(filePath)
 
-# 방 생성 및 구조물 배치
-room_image, structures = generate_map(room_width, room_height, num_structures, padding)
+def create(width=800, height=800, num_structures=15, padding=10):
+    # 방 크기, 구조물 개수, 벽과의 간격
 
-# 이미지 저장
-save_image(room_image, 'room_map.png')
+    # 방 생성, 구조물 배치
+    room_image, structures = generate_map(width, height, num_structures, padding)
+
+    # 이미지 저장
+    save_image(room_image, 'room_map.png')
+
+if __name__ == "__main__":
+    setFilePath( os.path.dirname(os.path.abspath(__file__)) )
+    create()
